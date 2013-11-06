@@ -1,0 +1,7 @@
+#!/bin/sh
+mkdir -p ca/private
+chmod 700 ca/private
+openssl req -x509 -nodes -days 3650 -newkey rsa:1024 -keyout ca/private/ca.key -out ca/ca.crt -subj "$SUBJ"
+touch ca/index.txt
+echo 1000 > ca/serial
+mkdir -p ca/newcerts
