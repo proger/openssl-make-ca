@@ -1,9 +1,4 @@
 #!/bin/sh
 
-# creates a $PREFIX certificate and keys
-PREFIX=$1
-
-mkdir -p $PREFIX/private
-chmod 700 $PREFIX/private
-openssl genrsa -out $PREFIX/private/$PREFIX.key 1024
-openssl req -new -nodes -key $PREFIX/private/$PREFIX.key -out $PREFIX/$PREFIX.csr -subj "$SUBJ"
+openssl genrsa -out $1.key 1024
+openssl req -new -nodes -key $1.key -out $1.csr -subj "$SUBJ"
