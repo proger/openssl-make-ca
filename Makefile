@@ -16,10 +16,10 @@ ssl:
 NAME ?= star
 
 star-ca:
-	env SUBJ="/C=AU/ST=Some-State/L=Springfield/O=Internet Widgits/CN=*.$(HOST)" ./create_ca
+	env SUBJ="$(SUBJ)" bash -x ./create_ca
 
 star:
-	env SUBJ="/C=AU/ST=Some-State/L=Springfield/O=Internet Widgits/CN=*.$(HOST)" ./create_key_csr $(NAME)
+	env SUBJ="$(SUBJ)" ./create_key_csr $(NAME)
 	# sign csrs with a CA
 	openssl ca -batch -config openssl.cnf -in $(NAME).csr -out $(NAME).crt
 
