@@ -1,10 +1,12 @@
+ME := $(dir $(lastword $(MAKEFILE_LIST)))
+
 HOST ?= example.com
 SUBJ ?= /C=AU/ST=Some-State/L=Springfield/O=Internet Widgits/CN=$(HOST)
 
 ssl:
-	env SUBJ="$(SUBJ)" ./create_ca
-	env SUBJ="$(SUBJ)" ./create_key_csr server
-	env SUBJ="$(SUBJ)" ./create_key_csr client
+	env SUBJ="$(SUBJ)" $(ME)/create_ca
+	env SUBJ="$(SUBJ)" $(ME)/create_key_csr server
+	env SUBJ="$(SUBJ)" $(ME)/create_key_csr client
 	# sign csrs with a CA
 	openssl ca -batch -config openssl.cnf -in server.csr -out server.pem
 	openssl ca -batch -config openssl.cnf -extensions ssl_client -in client.csr -out client.pem
@@ -16,10 +18,10 @@ ssl:
 NAME ?= star
 
 star-ca:
-	env SUBJ="$(SUBJ)" bash -x ./create_ca
+	env SUBJ="$(SUBJ)" bash -x $(ME)/create_ca
 
 star:
-	env SUBJ="$(SUBJ)" ./create_key_csr $(NAME)
+	env SUBJ="$(SUBJ)" $(ME)/create_key_csr $(NAME)
 	# sign csrs with a CA
 	openssl ca -batch -config openssl.cnf -in $(NAME).csr -out $(NAME).crt
 
