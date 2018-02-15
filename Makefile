@@ -24,7 +24,7 @@ server%.crt: server%.csr ca/ca.crt
 	openssl ca -batch -config openssl.cnf -extensions ssl_client -in $< -out $@
 
 %.p12: %.crt ca/ca.crt
-	openssl pkcs12 -export -passout pass:123 -in $< -inkey $*.key -CAfile ca/ca.crt -name $(basename $<) -out $@
+	openssl pkcs12 -export -passout pass:123 -in $< -inkey $*.key -CAfile ca/ca.crt -name $* -out $@
 
 
 clean:
