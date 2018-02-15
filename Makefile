@@ -1,29 +1,34 @@
-ME := $(dir $(lastword $(MAKEFILE_LIST)))
+SUBJPREFIX ?= /C=US/ST=CA/O=Blockchain/CN=
+RSALEN ?= 1024
 
-HOST ?= example.com
-SUBJ ?= /C=AU/ST=Some-State/L=Springfield/O=Internet Widgits/CN=$(HOST)
+all: ca/ca.crt server1.p12 client1.p12 client2.p12
 
-ssl:
-	env SUBJ="$(SUBJ)" $(ME)/create_ca
-	env SUBJ="$(SUBJ)" $(ME)/create_key_csr server
-	env SUBJ="$(SUBJ)" $(ME)/create_key_csr client
-	# sign csrs with a CA
-	openssl ca -batch -config openssl.cnf -in server.csr -out server.pem
-	openssl ca -batch -config openssl.cnf -extensions ssl_client -in client.csr -out client.pem
-	# export to p12 with password 123
-	openssl pkcs12 -export -passout pass:123 -in server.pem -inkey server.key -out server.p12 -name "server certificate"
-	openssl pkcs12 -export -passout pass:123 -in client.pem -inkey client.key -out client.p12 -CAfile ca/ca.crt -name "client certificate"
-	openssl pkcs12 -export -passout pass:123 -in ca/ca.crt -inkey ca/private/ca.key -out ca/private/ca.p12 -name "root CA"
+ca/ca.crt:
+	mkdir -p ca/private
+	mkdir -p ca/newcerts
+	chmod 700 ca/private
+	touch ca/index.txt
+	openssl req -new -nodes -newkey rsa:$(RSALEN) -keyout ca/private/ca.key -out ca/careq.csr -config openssl.cnf -subj "$(SUBJPREFIX)CA"
+	openssl ca -batch -create_serial -out $@ -days 3650 -keyfile ca/private/ca.key -selfsign -config openssl.cnf -infiles ca/careq.csr
 
-NAME ?= star
+%.key:
+	openssl genrsa -out $@ $(RSALEN)
 
-star-ca:
-	env SUBJ="$(SUBJ)" bash -x $(ME)/create_ca
+%.csr: %.key
+	openssl req -new -nodes -key $< -out $@ -subj "$(SUBJPREFIX)$*"
 
-star:
-	env SUBJ="$(SUBJ)" $(ME)/create_key_csr $(NAME)
-	# sign csrs with a CA
-	openssl ca -batch -config openssl.cnf -in $(NAME).csr -out $(NAME).crt
+server%.crt: server%.csr ca/ca.crt
+	openssl ca -batch -config openssl.cnf -in $< -out $@
+
+%.crt: %.csr ca/ca.crt
+	openssl ca -batch -config openssl.cnf -extensions ssl_client -in $< -out $@
+
+%.p12: %.crt ca/ca.crt
+	openssl pkcs12 -export -passout pass:123 -in $< -inkey $*.key -CAfile ca/ca.crt -name $(basename $<) -out $@
+
 
 clean:
-	git clean -dxf
+	rm -rf ca/ *.p12 *.key *.crt
+
+.PHONY: clean
+.PRECIOUS: %.key %.crt %.p12

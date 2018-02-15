@@ -1,4 +1,0 @@
-#!/bin/sh
-
-openssl genrsa -out $1.key 1024
-openssl req -new -nodes -key $1.key -out $1.csr -subj "$SUBJ"

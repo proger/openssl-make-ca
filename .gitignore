@@ -1,6 +1,5 @@
-client/
-server/
 ca/
 *.crt
 *.csr
 *.key
+*.p12

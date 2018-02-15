@@ -1,7 +1,0 @@
-#!/bin/sh
-mkdir -p ca/private
-mkdir -p ca/newcerts
-chmod 700 ca/private
-touch ca/index.txt
-openssl req -new -nodes -newkey rsa:1024 -keyout ca/private/ca.key -out ca/careq.pem -config openssl.cnf -subj "$SUBJ"
-openssl ca -batch -create_serial -out ca/ca.crt -days 365 -keyfile ca/private/ca.key -selfsign -config openssl.cnf -infiles ca/careq.pem
