@@ -15,3 +15,7 @@ $ make server42.p12
 
 ## note that p12 exports have the password "123"
 ```
+
+## OpenVPN server-to-clients
+
+Bonus: contains sample Mikrotik RouterOS-compatible OpenVPN configs.
