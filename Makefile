@@ -31,4 +31,4 @@ clean:
 	rm -rf ca/ *.p12 *.key *.crt
 
 .PHONY: clean
-.PRECIOUS: %.key %.crt %.p12
+.PRECIOUS: %.key %.crt server%.crt %.p12
