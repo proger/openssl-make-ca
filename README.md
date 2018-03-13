@@ -44,7 +44,7 @@ To test you can start a local https server (needs Erlang installed):
 ```bash
 erl -boot start_sasl -eval 'compile:file(httpsd), code:load_file(httpsd), httpsd:start().' -certfile localhost.crt  -keyfile localhost.key -cacertfile ca/ca.crt
 
-curl -v --cacert ca/ca.crt https://localhost:8080/
+curl -v --cacert ca/ca.crt https://localhost:8080/README.md
 
-curl -v -4 --resolve www.localhost:8080:127.0.0.1 --cacert ca/ca.crt https://www.localhost:8080/
+curl -v -4 --resolve www.localhost:8080:127.0.0.1 --cacert ca/ca.crt https://www.localhost:8080/README.md
 ```
