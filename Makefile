@@ -12,7 +12,7 @@ ca/ca.crt:
 	mkdir -p ca/newcerts
 	chmod 700 ca/private
 	touch ca/index.txt
-	$(OPENSSL) req -new -nodes -newkey rsa:$(RSALEN) -keyout ca/private/ca.key -out ca/careq.csr -config openssl.cnf -subj "$(SUBJPREFIX)CA"
+	$(OPENSSL) req -new -nodes -newkey rsa:$(RSALEN) -keyout ca/private/ca.key -out ca/careq.csr -config openssl.cnf -subj "$(SUBJPREFIX)SYNRC"
 	$(OPENSSL) ca -batch -create_serial -out $@ -days 3650 -keyfile ca/private/ca.key -selfsign -config openssl.cnf -infiles ca/careq.csr
 
 %.key:

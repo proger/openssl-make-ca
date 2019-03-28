@@ -6,7 +6,7 @@ Usage:
 
 ```console
 ## generate a CA and a couple of certs
-$ make all
+$ make all EXTENSIONS=
 
 ## you can specify arbitrary crt or p12 targets
 ## file basename serves as CN
